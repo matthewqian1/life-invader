@@ -5,13 +5,13 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document("user_accounts")
+import java.util.List;
+
+@Document("nutrition_history")
 @Data
 @AllArgsConstructor
-public class Account {
+public class NutritionHistory {
     @Id
     private String username;
-    private String password;
-    private String email;
-    private String profilePhoto;
+    private List<NutritionEntry> history;
 }

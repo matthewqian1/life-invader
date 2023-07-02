@@ -3,19 +3,30 @@ package com.example.lifeinvader.services;
 import com.example.lifeinvader.model.Account;
 import com.example.lifeinvader.model.CreateAccountForm;
 import com.example.lifeinvader.model.LoginForm;
+import com.example.lifeinvader.model.UserSession;
 import com.example.lifeinvader.repo.AccountRepo;
-import jakarta.annotation.PostConstruct;
+import com.example.lifeinvader.repo.SessionRepo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.*;
 
 /**
  * Manages user account and session actions
  */
+@Slf4j
 @Service
 public class UserAccountService {
 
     @Autowired
-    AccountRepo accountRepo;
+    private AccountRepo accountRepo;
+    @Autowired
+    private SessionRepo sessionRepo;
+
+    public UserAccountService(AccountRepo accountRepo) {
+        this.accountRepo = accountRepo;
+    }
 
     /**
      * Creates a user account
@@ -23,7 +34,7 @@ public class UserAccountService {
      * @return
      */
     public String createAccount(CreateAccountForm form) {
-        accountRepo.save(new Account(form.getUsername(), form.getPassword(), form.getEmail()));
+        accountRepo.save(new Account(form.getUsername(), form.getPassword(), form.getEmail(), form.getProfilePhoto()));
         return null;
     }
 
@@ -32,8 +43,19 @@ public class UserAccountService {
      * @param form
      * @return
      */
-    public String login(LoginForm form) {
-        return null;
+    public String login(LoginForm form) throws Exception {
+        Optional<Account> optional = accountRepo.findById(form.getUsername());
+        if (optional.isEmpty()) {
+            throw new Exception("username is invalid");
+        }
+
+        if (!optional.get().getPassword().equals(form.getPassword())) {
+            throw new Exception("password for the username is incorrect");
+        }
+
+        String sessionToken = generateSessionToken();
+        sessionRepo.save( new UserSession(sessionToken, form.getUsername()));
+        return sessionToken;
     }
 
     /**
@@ -41,8 +63,11 @@ public class UserAccountService {
      * @param sessionToken
      */
     public void logout(String sessionToken) {
-
+        sessionRepo.deleteById(sessionToken);
     }
 
+    private String generateSessionToken() {
+        return UUID.randomUUID().toString();
+    }
 
 }

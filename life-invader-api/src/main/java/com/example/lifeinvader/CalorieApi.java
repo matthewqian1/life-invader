@@ -15,6 +15,7 @@ public class CalorieApi {
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestProperty("accept", "application/json");
         connection.setRequestProperty("X-Api-Key", "BmkEi8jF05eXjSoaizJOCQ==V0ddaLo63EAS7aTF");
+
         InputStream responseStream = connection.getInputStream();
         ObjectMapper mapper = new ObjectMapper();
         JsonNode root = mapper.readTree(responseStream);

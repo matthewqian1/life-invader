@@ -1,17 +1,16 @@
 package com.example.lifeinvader.model;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document("user_accounts")
 @Data
+@Document("user_sessions")
 @AllArgsConstructor
-public class Account {
+public class UserSession {
     @Id
+    private String sessionId;
     private String username;
-    private String password;
-    private String email;
-    private String profilePhoto;
 }
