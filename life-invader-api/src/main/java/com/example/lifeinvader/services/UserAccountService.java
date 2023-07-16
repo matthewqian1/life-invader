@@ -66,6 +66,16 @@ public class UserAccountService {
         sessionRepo.deleteById(sessionToken);
     }
 
+    public Account getAccountDetails (String sessionToken) {
+        log.info("fetching account details for session id {}", sessionToken);
+        return accountRepo.findById(
+                sessionRepo.findById(sessionToken)
+                        .get()
+                        .getUsername()
+        )
+                .get();
+    }
+
     private String generateSessionToken() {
         return UUID.randomUUID().toString();
     }
