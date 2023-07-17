@@ -17,7 +17,7 @@ function AddCalories(){
   }
 
   return (
-    <div className="create">
+    <div className="create" style={{position: 'absolute', left: "800px"}}>
       <h2>Enter Food</h2>
       <form onSubmit={handleSubmit}>
         <label>Name:</label>
