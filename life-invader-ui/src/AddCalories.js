@@ -1,19 +1,35 @@
 import { useState } from "react";
-import { Route } from "react-router-dom";
+import {useLocation} from 'react-router-dom';
+import NutritionDetails from "./NutritionDetails";
 
 function AddCalories(){
-  const [title, setTitle] = useState('');
+  const location = useLocation();
+  const [foodItem, setFoodItem] = useState('');
   const [body, setBody] = useState('');
+  const [showNutritionDetails, setShowNutritionDetails] = useState(false);
+  const [nutritionDetails, setNutritionDetails] = useState('');
+
+  const searchFood = (e) => {
+    e.preventDefault();
+    fetch(`http://localhost:8080/nutrition/search/${foodItem}` , {
+      method: 'GET',
+      headers: { "Content-Type": "application/json"}
+    }).then((result) => {
+      if (result.status !== 200) {
+        alert("invalid food item, check spelling and try again")
+        setShowNutritionDetails(false)
+      } else {
+        result.json().then(data => {
+          setNutritionDetails(data);
+          setShowNutritionDetails(true);
+        })
+      }
+      
+    })
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const blog = { title, body};
-    console.log(blog);
-    fetch('http://localhost:8080/account/ping' , {
-      method: 'GET'
-    }).then((result) => {
-      console.log(result);
-    })
   }
 
   return (
@@ -24,9 +40,11 @@ function AddCalories(){
         <input 
           type="text" 
           required 
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          value={foodItem}
+          onChange={(e) => setFoodItem(e.target.value)}
         />
+        <button onClick={searchFood}>Search</button>
+        {showNutritionDetails && <NutritionDetails data={nutritionDetails}/>}
         <label>Amount(grams):</label>
         <textarea
           required
