@@ -4,8 +4,6 @@ import com.example.lifeinvader.model.*;
 import com.example.lifeinvader.repo.AccountRepo;
 import com.example.lifeinvader.repo.NutritionHistoryRepo;
 import com.example.lifeinvader.repo.NutritionItemRepo;
-import com.example.lifeinvader.services.NutritionEntryService;
-import com.example.lifeinvader.services.UserAccountService;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,17 +46,17 @@ public class TestUserConfig {
         nutritionHistoryRepo.save(new NutritionHistory(testUsername, List.of(
                 NutritionEntry.builder()
                         .date(LocalDate.of(2023, 6, 6))
-                        .foodName("testBeans")
+                        .foodItem("testBeans")
                         .weightGrams(100)
                         .build(),
                 NutritionEntry.builder()
                         .date(LocalDate.of(2023, 6, 5))
-                        .foodName("testCookies")
+                        .foodItem("testCookies")
                         .weightGrams(100)
                         .build(),
                 NutritionEntry.builder()
                         .date(LocalDate.of(2023, 6, 7))
-                        .foodName("testDonuts")
+                        .foodItem("testDonuts")
                         .weightGrams(100)
                         .build()
         )));

@@ -8,7 +8,7 @@ import java.time.LocalDate;
 @Data
 @Builder
 public class NutritionEntry {
-    private String foodName;
+    private String foodItem;
     private int weightGrams;
     private LocalDate date;
 }

@@ -9,7 +9,6 @@ import com.example.lifeinvader.utils.NutritionApiUtils;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -18,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
+
 import static com.example.lifeinvader.model.ConsumptionSnapshot.*;
 
 @Slf4j
@@ -89,7 +88,7 @@ public class NutritionEntryService {
     }
 
     private Consumption toConsumption(Type type, NutritionEntry entry) {
-        NutritionItemData item  = nutritionItemRepo.findById(entry.getFoodName()).get();
+        NutritionItemData item  = nutritionItemRepo.findById(entry.getFoodItem()).get();
         int units = 0;
         switch (type) {
             case CALORIES -> {
@@ -101,15 +100,19 @@ public class NutritionEntryService {
     }
 
 
-    public boolean validItem(String foodName) throws IOException {
+    public NutritionItemData validItem(String foodName) throws IOException {
         if (nutritionItemRepo.existsById(foodName)) {
-            return true;
+            log.info("{} exists in repo, returning cached result", foodName);
+            return nutritionItemRepo.findById(foodName).get();
         }
         NutritionItemData result = NutritionApiUtils.searchItem(foodName);
         if (result == null) {
-            return false;
+            log.warn("{} not a valid food item", foodName);
+            return null;
         }
         nutritionItemRepo.save(result);
-        return true;
+        log.info("new food item {} added to database", foodName);
+        return result;
     }
+
 }

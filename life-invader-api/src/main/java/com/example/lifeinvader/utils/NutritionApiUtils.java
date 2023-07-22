@@ -15,7 +15,7 @@ public class NutritionApiUtils {
     private static final ObjectMapper mapper = new ObjectMapper();
 
     public static NutritionItemData searchItem(String foodName) throws IOException {
-        URL url = new URL(String.format("%s/query=%s", nutritionSearchUrl, foodName));
+        URL url = new URL(String.format("%s?query=%s", nutritionSearchUrl, foodName));
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestProperty("accept", "application/json");
         connection.setRequestProperty("X-Api-Key", "BmkEi8jF05eXjSoaizJOCQ==V0ddaLo63EAS7aTF");
