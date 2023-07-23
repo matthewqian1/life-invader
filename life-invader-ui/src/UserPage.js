@@ -48,8 +48,6 @@ function UserPage(){
   }, [loadConsumptionSnapshot]);
 
   useEffect(() => {
-    if (loadConsumptionBreakdown) {
-      
     fetch(`http://localhost:8080/nutrition/consumption/breakdown?date=${consumptionBreakdownDate}` , {
       method: 'GET',
       headers: { "Content-Type": "application/json", "Authorization": `${location.state.token}`}
@@ -58,10 +56,8 @@ function UserPage(){
     .then(data => {
         console.log(data);
         setConsumptionBreakdown(data);
-        setLoadConsumptionBreakdown(false);
     })
-  }
-  }, [loadConsumptionBreakdown]);
+  }, [consumptionBreakdownDate, loadConsumptionSnapshot]);
   
 
 
@@ -80,12 +76,34 @@ function UserPage(){
   <LineGraph data={consumptionSnapshot} style></LineGraph>
   
   <AddCalories token={location.state.token} reload={setLoadConsumptionSnapshot}></AddCalories>
-  <div>
-    hellooooooooooooooooooooooooooooooooo
+  <div className="create">
+    <h2 style={{color:"red"}}>Consumption Breakdown ({consumptionBreakdownDate})</h2>
+    <form>
+      <label>Choose Date</label>
+      <input 
+          type="date" 
+          required 
+          value={consumptionBreakdownDate}
+          onChange={(e) => setConsumptionBreakdownDate(e.target.value)}
+      />
+    </form>
+    <table>
+      <tr>
+        <th>Food</th>
+        <th>Weight(mg)</th>
+        <th>Calories</th>
+      </tr>
+      {consumptionBreakdown.map((item) => {
+        return (
+        <tr>
+          <td>{item.foodItem}</td>
+          <td>{item.weightGrams}</td>
+          <td>{item.calories}</td>
+        </tr>
+        )
+      })}
+    </table>
   </div>
-</div>
-<div style={{ paddingRight : "20px"}}>
-  
 </div>
 
     

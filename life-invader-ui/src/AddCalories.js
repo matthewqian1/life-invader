@@ -75,7 +75,9 @@ function AddCalories(data){
           onChange={(e) => setFoodItem(e.target.value)}
         />
         <button onClick={searchFood}>Search</button>
+        <br></br>
         {showNutritionDetails && <NutritionDetails data={nutritionDetails}/>}
+        <br></br>
         <label>Weight(grams):</label>
         <textarea
           required

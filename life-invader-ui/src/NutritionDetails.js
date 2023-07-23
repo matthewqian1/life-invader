@@ -5,8 +5,10 @@ function NutritionDetails( detailsJson ){
 
   if (detailsJson !== null) {
     return (
-        <div>
-          <h2>Showing nutrition details for - {detailsJson.data.name}</h2>
+      <>
+         <br></br>
+        <div style={{border: "1px dashed black", padding:"10px"}}>
+          <h5><i>Nutrition details for - {detailsJson.data.name}</i></h5>
             <label>calories:               {detailsJson.data.calories}</label>
             <label>carbs(mg):               {detailsJson.data.carbohydratesTotalMg}</label>
             <label>cholesterol(mg) :        {detailsJson.data.cholesterolMg}</label>
@@ -17,6 +19,7 @@ function NutritionDetails( detailsJson ){
             <label>servingSize(g) :        {detailsJson.data.servingSizeG}</label>
             <label>sugar(g) :        {detailsJson.data.sugarG}</label>
         </div>
+        </>
       );
   } else {
     return <div></div>

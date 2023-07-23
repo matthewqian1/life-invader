@@ -81,6 +81,10 @@
   padding: 1%;
 }
 
+table, th, td {
+  border:1px solid black;
+}
+
 /* Style 8
    ----------------------------- */
    .heading1 h1 {
