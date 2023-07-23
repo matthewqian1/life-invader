@@ -11,4 +11,5 @@ public class NutritionEntry {
     private String foodItem;
     private int weightGrams;
     private LocalDate date;
+    private int calories;
 }

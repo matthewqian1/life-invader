@@ -39,6 +39,7 @@ public class NutritionEntryService {
     public void addEntry(String sessionToken, NutritionEntry entry) {
         sessionRepo.findById(sessionToken).ifPresent(s -> {
             String username = s.getUsername();
+            entry.setCalories(nutritionItemRepo.findById(entry.getFoodItem()).get().getCalories() * entry.getWeightGrams()/ 100);
             nutritionHistoryRepo.findById(username).ifPresentOrElse(nutritionHistory -> {
                 List<NutritionEntry> history = new ArrayList<>(nutritionHistory.getHistory());
                 history.add(entry);
