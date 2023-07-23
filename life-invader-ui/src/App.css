@@ -76,7 +76,9 @@
 
 .sideBySide {
   display: flex;
-  flex-direction: row;
+  position: relative;
+  flex-wrap: nowrap;
+  padding: 1%;
 }
 
 /* Style 8

@@ -4,7 +4,6 @@ import {useLocation} from 'react-router-dom';
 function NutritionDetails( detailsJson ){
 
   if (detailsJson !== null) {
-    console.log(detailsJson.data.name);
     return (
         <div>
           <h2>Showing nutrition details for - {detailsJson.data.name}</h2>

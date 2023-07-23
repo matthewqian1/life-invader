@@ -50,7 +50,7 @@ function Login(){
   );
 }
 
-function loginRequest (username, password, navigate) {
+export function loginRequest (username, password, navigate) {
   const credentials = { username, password};
   fetch('http://localhost:8080/account/login' , {
     method: 'POST',

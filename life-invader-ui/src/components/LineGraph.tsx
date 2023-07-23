@@ -13,18 +13,17 @@ import {
 function LineGraph({data}) {
     return (
         <>
-
-            <ResponsiveContainer width="50%" aspect={3}>
-                <LineChart data={data} margin={{ right: 300 }}>
+            <ResponsiveContainer width="50%" aspect={2}>
+                <LineChart data={data} margin={{ right: 0 }}>
                     <CartesianGrid />
                     <XAxis dataKey="date" 
                         interval={'preserveStartEnd'} />
                     <YAxis></YAxis>
                     <Legend />
                     <Tooltip />
-                    <Line dataKey="unit" name='calories'
+                    <Line dataKey="unit" name='calories consumed'
                         stroke="black" activeDot={{ r: 8 }} />
-                    <Line dataKey="fees"
+                    <Line dataKey="dailyCalorieGoal" name='daily goal'
                         stroke="red" activeDot={{ r: 8 }} />
                 </LineChart>
             </ResponsiveContainer>
