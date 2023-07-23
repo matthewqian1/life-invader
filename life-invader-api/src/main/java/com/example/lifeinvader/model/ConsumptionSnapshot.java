@@ -22,6 +22,7 @@ public class ConsumptionSnapshot {
     @AllArgsConstructor
     public static class Consumption {
         int unit;
+        int dailyCalorieGoal;
         LocalDate date;
     }
 }

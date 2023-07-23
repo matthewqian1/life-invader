@@ -1,9 +1,9 @@
 package com.example.lifeinvader.controllers;
 
-import com.example.lifeinvader.model.ConsumptionSnapshot;
-import com.example.lifeinvader.model.NutritionEntry;
-import com.example.lifeinvader.model.NutritionItemData;
+import com.example.lifeinvader.model.*;
 import com.example.lifeinvader.services.NutritionEntryService;
+import com.example.lifeinvader.utils.CalorieUtils;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @CrossOrigin
@@ -27,6 +28,11 @@ public class NutritionController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/getRecommendedCalories")
+    public ResponseEntity<Integer> recommendCalories(@RequestBody RecommendedCaloriesForm form) throws IOException {
+        return ResponseEntity.ok(CalorieUtils.getRecommendedCalories(form.getHeightCm(), form.getWeightKg(), form.getActivityLevel(), form.getAge()));
+    }
+
     @GetMapping("/search/{foodItem}")
     public ResponseEntity<NutritionItemData> search(@PathVariable String foodItem) throws IOException {
         NutritionItemData result = nutritionEntryService.validItem(foodItem);
@@ -35,9 +41,12 @@ public class NutritionController {
 
     @GetMapping("/consumption/snapshot")
     public ResponseEntity<ConsumptionSnapshot> consumptionSnapshot(@RequestHeader(name="Authorization") String token) throws IOException {
-        System.out.println("consumption");
-        return ResponseEntity.ok(nutritionEntryService.getConsumptionSnapshot(token, ConsumptionSnapshot.Type.CALORIES, LocalDate.of(2023, 5, 1), LocalDate.now()));
+        return ResponseEntity.ok(nutritionEntryService.getConsumptionSnapshot(token, ConsumptionSnapshot.Type.CALORIES, LocalDate.now().minusWeeks(1), LocalDate.now()));
     }
 
+    @GetMapping("/consumption/breakdown")
+    public ResponseEntity<List<NutritionEntry>> consumptionBreakdown(@RequestHeader(name="Authorization") String token, @RequestParam LocalDate date) throws IOException {
+        return ResponseEntity.ok(nutritionEntryService.getBreakdown(token, date));
+    }
 
 }

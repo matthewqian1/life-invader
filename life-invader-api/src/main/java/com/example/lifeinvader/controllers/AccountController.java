@@ -20,7 +20,6 @@ public class AccountController {
     private UserAccountService userAccountService;
     @PostMapping("/create")
     public ResponseEntity<String> createAccount(@RequestBody CreateAccountForm form) {
-        System.out.println("HELLO");
         return ResponseEntity.ok(userAccountService.createAccount(form));
     }
 

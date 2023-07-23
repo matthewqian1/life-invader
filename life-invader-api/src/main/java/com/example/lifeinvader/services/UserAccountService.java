@@ -1,5 +1,6 @@
 package com.example.lifeinvader.services;
 
+import com.example.lifeinvader.config.TestUtils;
 import com.example.lifeinvader.model.Account;
 import com.example.lifeinvader.model.CreateAccountForm;
 import com.example.lifeinvader.model.LoginForm;
@@ -23,6 +24,8 @@ public class UserAccountService {
     private AccountRepo accountRepo;
     @Autowired
     private SessionRepo sessionRepo;
+    @Autowired
+    private TestUtils testUtils;
 
     public UserAccountService(AccountRepo accountRepo) {
         this.accountRepo = accountRepo;
@@ -34,7 +37,8 @@ public class UserAccountService {
      * @return
      */
     public String createAccount(CreateAccountForm form) {
-        accountRepo.save(new Account(form.getUsername(), form.getPassword(), form.getEmail(), form.getProfilePhoto()));
+        accountRepo.save(new Account(form.getUsername(), form.getPassword(), form.getEmail(), form.getProfilePhoto(),form.getAge(), form.getWeightKg(), form.getHeightCm(), form.getActivityLevel(), form.getDailyCalorieGoal()));
+        testUtils.loadTestDetails(form.getUsername());
         return null;
     }
 

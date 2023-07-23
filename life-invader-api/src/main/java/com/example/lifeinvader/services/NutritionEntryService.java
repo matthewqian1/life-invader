@@ -2,6 +2,7 @@ package com.example.lifeinvader.services;
 
 
 import com.example.lifeinvader.model.*;
+import com.example.lifeinvader.repo.AccountRepo;
 import com.example.lifeinvader.repo.NutritionHistoryRepo;
 import com.example.lifeinvader.repo.NutritionItemRepo;
 import com.example.lifeinvader.repo.SessionRepo;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.example.lifeinvader.model.ConsumptionSnapshot.*;
 
@@ -29,6 +31,9 @@ public class NutritionEntryService {
     private NutritionItemRepo nutritionItemRepo;
     @Autowired
     private NutritionHistoryRepo nutritionHistoryRepo;
+
+    @Autowired
+    private AccountRepo accountRepo;
     private final String nutritionSearchUrl = "https://api.api-ninjas.com/v1/nutrition";
 
     public void addEntry(String sessionToken, NutritionEntry entry) {
@@ -39,8 +44,10 @@ public class NutritionEntryService {
                 history.add(entry);
                 nutritionHistory.setHistory(history);
                 nutritionHistoryRepo.save(nutritionHistory);
+                log.info("food entry added to existing record!");
             }, () -> {
                 nutritionHistoryRepo.save(new NutritionHistory(username, Collections.singletonList(entry)));
+                log.info("New record created!");
             });
         });
     }
@@ -49,21 +56,38 @@ public class NutritionEntryService {
         return nutritionHistoryRepo.findById(sessionRepo.findById(sessionToken).get().getUsername()).get();
     }
 
-    public ConsumptionSnapshot getConsumptionSnapshot(String sessionToken, ConsumptionSnapshot.Type type, LocalDate start, LocalDate end) {
-        NutritionHistory history = nutritionHistoryRepo.findById(sessionRepo.findById(sessionToken).get().getUsername()).get();
-        List<NutritionEntry> filtered = history.getHistory()
+    public List<NutritionEntry> getBreakdown(String sessionToken, LocalDate date) {
+        return nutritionHistoryRepo.findById(sessionRepo.findById(sessionToken).get().getUsername()).get()
+                .getHistory()
                 .stream()
+                .filter(e -> e.getDate().equals(date))
                 .sorted(Comparator.comparing(NutritionEntry::getDate))
-                .filter(h -> (h.getDate().isAfter(start) && h.getDate().isBefore(end)))
-                .toList();
+                .collect(Collectors.toList());
+
+    }
+
+
+    public ConsumptionSnapshot getConsumptionSnapshot(String sessionToken, ConsumptionSnapshot.Type type, LocalDate start, LocalDate end) {
+        String username = sessionRepo.findById(sessionToken).get().getUsername();
+        int dailyCalorieGoal = accountRepo.findById(username).get().getDailyCalorieGoal();
         ConsumptionSnapshot snapshot = ConsumptionSnapshot.builder()
                 .type(type)
                 .history(new ArrayList<>())
                 .build();
+        if (!nutritionHistoryRepo.existsById(username)) {
+            return snapshot;
+        }
+        NutritionHistory history = nutritionHistoryRepo.findById(username).get();
+        List<NutritionEntry> filtered = history.getHistory()
+                .stream()
+                .sorted(Comparator.comparing(NutritionEntry::getDate))
+                .filter(h -> (!h.getDate().isBefore(start) && !h.getDate().isAfter(end)))
+                .toList();
+
         if (filtered.isEmpty()) {
             return snapshot;
         }
-        Consumption currentConsumption = toConsumption(type, filtered.get(0));
+        Consumption currentConsumption = toConsumption(type, filtered.get(0), dailyCalorieGoal);
         if (filtered.size() == 1) {
             return ConsumptionSnapshot.builder()
                     .history(Collections.singletonList(currentConsumption))
@@ -72,7 +96,7 @@ public class NutritionEntryService {
         }
         List<Consumption> consumptionList = new ArrayList<>();
         for (int i = 1; i < filtered.size(); i++) {
-            Consumption consumption = toConsumption(type, filtered.get(i));
+            Consumption consumption = toConsumption(type, filtered.get(i), dailyCalorieGoal);
             if (currentConsumption.getDate().equals(consumption.getDate())) {
                 currentConsumption.setUnit(currentConsumption.getUnit() + consumption.getUnit());
             } else {
@@ -87,16 +111,16 @@ public class NutritionEntryService {
                 .build();
     }
 
-    private Consumption toConsumption(Type type, NutritionEntry entry) {
+    private Consumption toConsumption(Type type, NutritionEntry entry, int dailyCalorieGoal) {
         NutritionItemData item  = nutritionItemRepo.findById(entry.getFoodItem()).get();
         int units = 0;
         switch (type) {
             case CALORIES -> {
-                units = entry.getWeightGrams() * item.getCalories();
+                units =(entry.getWeightGrams() * item.getCalories()) / 100;
             }
         }
 
-        return new Consumption(units, entry.getDate());
+        return new Consumption(units, dailyCalorieGoal, entry.getDate());
     }
 
 

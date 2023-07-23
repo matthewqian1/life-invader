@@ -4,6 +4,7 @@ import com.example.lifeinvader.model.*;
 import com.example.lifeinvader.repo.AccountRepo;
 import com.example.lifeinvader.repo.NutritionHistoryRepo;
 import com.example.lifeinvader.repo.NutritionItemRepo;
+import com.example.lifeinvader.utils.CalorieUtils;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class TestUserConfig {
+public class TestUtils {
 
     private static final String testUsername = "user1";
     private static final String testPassword = "password";
@@ -28,9 +29,9 @@ public class TestUserConfig {
     NutritionItemRepo nutritionItemRepo;
 
     @PostConstruct
-    public void init() {
+    public void initTestUser() {
         log.info("Initialising test user details for {}", testUsername);
-        accountRepo.save(new Account(testUsername, testPassword, null, null));
+        accountRepo.save(new Account(testUsername, testPassword, null, null, 25, 84, 185, ActivityLevel.MODERATE, CalorieUtils.getRecommendedCalories(185, 84, ActivityLevel.MODERATE, 25)));
         nutritionItemRepo.save(NutritionItemData.builder()
                         .name("testBeans")
                         .calories(50)
@@ -43,24 +44,49 @@ public class TestUserConfig {
                 .name("testDonuts")
                 .calories(400)
                 .build());
-        nutritionHistoryRepo.save(new NutritionHistory(testUsername, List.of(
+        nutritionHistoryRepo.deleteAll();
+        loadTestDetails(testUsername);
+
+    }
+
+    public void loadTestDetails(String username) {
+        nutritionHistoryRepo.save(new NutritionHistory(username, List.of(
                 NutritionEntry.builder()
-                        .date(LocalDate.of(2023, 6, 6))
+                        .date(LocalDate.now().minusDays(0))
                         .foodItem("testBeans")
-                        .weightGrams(100)
+                        .weightGrams(2500)
                         .build(),
                 NutritionEntry.builder()
-                        .date(LocalDate.of(2023, 6, 5))
+                        .date(LocalDate.now().minusDays(1))
+                        .foodItem("testBeans")
+                        .weightGrams(3000)
+                        .build(),
+                NutritionEntry.builder()
+                        .date(LocalDate.now().minusDays(2))
                         .foodItem("testCookies")
-                        .weightGrams(100)
+                        .weightGrams(1000)
                         .build(),
                 NutritionEntry.builder()
-                        .date(LocalDate.of(2023, 6, 7))
+                        .date(LocalDate.now().minusDays(3))
                         .foodItem("testDonuts")
-                        .weightGrams(100)
+                        .weightGrams(800)
+                        .build(),
+                NutritionEntry.builder()
+                        .date(LocalDate.now().minusDays(4))
+                        .foodItem("testBeans")
+                        .weightGrams(6000)
+                        .build(),
+                NutritionEntry.builder()
+                        .date(LocalDate.now().minusDays(5))
+                        .foodItem("testCookies")
+                        .weightGrams(2000)
+                        .build(),
+                NutritionEntry.builder()
+                        .date(LocalDate.now().minusDays(6))
+                        .foodItem("testDonuts")
+                        .weightGrams(1200)
                         .build()
         )));
-
     }
 
 

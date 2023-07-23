@@ -14,4 +14,9 @@ public class Account {
     private String password;
     private String email;
     private String profilePhoto;
+    private int age;
+    private int weightKg;
+    private int heightCm;
+    private ActivityLevel activityLevel;
+    private int dailyCalorieGoal;
 }

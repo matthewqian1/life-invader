@@ -10,4 +10,9 @@ public class CreateAccountForm {
     String password;
     String email;
     String profilePhoto;
+    int age;
+    int weightKg;
+    int heightCm;
+    ActivityLevel activityLevel;
+    int dailyCalorieGoal;
 }
