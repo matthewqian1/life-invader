@@ -19,6 +19,7 @@ https://github.com/matthewqian1/life-invader/assets/66478998/b73d7146-b0d2-4b04-
 - Deploy to the cloud
 - Layout/Design/Colouring
 - Add future consumption recommendations based on current progress (food recs/future calorie breakdown)
+- Add exercise to measure calories too
 - Social media/network features (posts/likes/friends)
 - Web scraping for health news
 
