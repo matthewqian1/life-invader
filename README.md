@@ -12,9 +12,6 @@ I am creating a fitness app which tracks calorie consumption and goals. In the p
 - Spring Boot Java
 - MongoDB
 
-## Demo
-https://github.com/matthewqian1/life-invader/assets/66478998/b73d7146-b0d2-4b04-9b58-19dfb10abda4
-
 ## Improvements/Future Considerations
 - Layout/Design/Colouring
 - Add future consumption recommendations based on current progress (food recs/future calorie breakdown)
